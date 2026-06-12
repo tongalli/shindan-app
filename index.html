@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>経営思想タイプ診断 | awanokikaku</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+JP:wght@300;400&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f7f4;
+      --text: #13110e;
+      --text-muted: #6b6660;
+      --accent: #b8924a;
+      --accent-dark: #96733a;
+      --border: #e0ddd8;
+      --white: #ffffff;
+      --serif-en: 'Cormorant Garamond', Georgia, serif;
+      --serif-ja: 'Noto Serif JP', serif;
+      --sans-ja: 'Noto Sans JP', sans-serif;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans-ja);
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 640px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── SCREENS ─────────────────────────────────── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      padding: 0 24px;
+      animation: fadeIn 0.5s ease both;
+    }
+    .screen.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ─── PROGRESS BAR ─────────────────────────────── */
+    .progress-wrap {
+      padding: 28px 24px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      font-family: var(--serif-en);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* ─── SCREEN 1: START ─────────────────────────── */
+    #screen-start {
+      justify-content: center;
+      min-height: 100vh;
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+    .start-eyebrow {
+      font-family: var(--serif-en);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 32px;
+    }
+    .start-title {
+      font-family: var(--serif-ja);
+      font-size: clamp(28px, 6vw, 40px);
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .start-title-en {
+      font-family: var(--serif-en);
+      font-size: clamp(13px, 2.5vw, 16px);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+    }
+    .start-desc {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text-muted);
+      margin-bottom: 56px;
+      max-width: 440px;
+    }
+    .start-meta {
+      font-family: var(--serif-en);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--border);
+      margin-top: 48px;
+    }
+
+    /* ─── SCREEN 2: ELIGIBILITY ───────────────────── */
+    #screen-eligibility {
+      justify-content: center;
+      min-height: 100vh;
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+    .eligibility-title {
+      font-family: var(--serif-ja);
+      font-size: clamp(18px, 4vw, 24px);
+      font-weight: 400;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+    .eligibility-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .eligibility-btn {
+      border: 1px solid var(--border);
+      background: var(--white);
+      padding: 20px 24px;
+      font-family: var(--sans-ja);
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .eligibility-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg);
+    }
+    .eligibility-btn .btn-note {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ─── SCREEN 3: QUESTIONS ─────────────────────── */
+    #screen-question {
+      padding-top: 0;
+      padding-bottom: 60px;
+    }
+    .question-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 40px;
+      min-height: calc(100vh - 100px);
+    }
+    .question-cluster {
+      font-family: var(--serif-en);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .question-text {
+      font-family: var(--serif-ja);
+      font-size: clamp(20px, 4.5vw, 28px);
+      font-weight: 400;
+      line-height: 1.65;
+      margin-bottom: 48px;
+    }
+    .scale-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .scale-option {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .scale-option:first-child { border-top: 1px solid var(--border); }
+    .scale-option:hover .scale-label { color: var(--accent); }
+    .scale-option:hover .scale-radio { border-color: var(--accent); }
+    .scale-radio {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s;
+    }
+    .scale-radio-inner {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .scale-option.selected .scale-radio { border-color: var(--accent); }
+    .scale-option.selected .scale-radio-inner { opacity: 1; }
+    .scale-option.selected .scale-label { color: var(--text); font-weight: 400; }
+    .scale-num {
+      font-family: var(--serif-en);
+      font-size: 14px;
+      color: var(--text-muted);
+      width: 16px;
+      flex-shrink: 0;
+    }
+    .scale-label {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+    .question-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 40px;
+    }
+    .nav-back {
+      font-family: var(--serif-en);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--text); }
+    .nav-back:disabled { opacity: 0; pointer-events: none; }
+
+    /* ─── SCREEN 4: EMAIL ─────────────────────────── */
+    #screen-email {
+      justify-content: center;
+      min-height: 100vh;
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+    .email-eyebrow {
+      font-family: var(--serif-en);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .email-title {
+      font-family: var(--serif-ja);
+      font-size: clamp(20px, 4.5vw, 28px);
+      font-weight: 400;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .email-desc {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+    .email-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      padding: 12px 0;
+      font-family: var(--sans-ja);
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      margin-bottom: 32px;
+      transition: border-color 0.2s;
+    }
+    .email-input:focus { border-color: var(--accent); }
+    .email-input::placeholder { color: var(--border); }
+    .email-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 16px;
+    }
+
+    /* ─── SCREEN 5: RESULT ────────────────────────── */
+    #screen-result {
+      padding-top: 0;
+      padding-bottom: 80px;
+    }
+    .result-header {
+      padding-top: 64px;
+      margin-bottom: 56px;
+    }
+    .result-eyebrow {
+      font-family: var(--serif-en);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .result-type-en {
+      font-family: var(--serif-en);
+      font-size: clamp(32px, 7vw, 52px);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .result-type-ja {
+      font-family: var(--serif-ja);
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+    .result-tagline {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .cluster-chart {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 56px;
+    }
+    .cluster-bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .cluster-bar-outer {
+      width: 100%;
+      height: 80px;
+      background: var(--border);
+      display: flex;
+      align-items: flex-end;
+    }
+    .cluster-bar-inner {
+      width: 100%;
+      background: var(--accent);
+      transition: height 1s ease;
+    }
+    .cluster-bar-inner.dominant { background: var(--accent-dark); }
+    .cluster-label {
+      font-family: var(--serif-en);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+    .cluster-pct {
+      font-family: var(--serif-en);
+      font-size: 13px;
+      color: var(--text);
+    }
+    .result-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+    .result-section {
+      margin-bottom: 36px;
+    }
+    .result-section-label {
+      font-family: var(--serif-en);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .result-section-text {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text);
+    }
+    .result-cta-block {
+      margin-top: 64px;
+      padding: 40px;
+      background: var(--white);
+      border: 1px solid var(--border);
+    }
+    .result-cta-text {
+      font-family: var(--serif-ja);
+      font-size: 15px;
+      line-height: 1.9;
+      margin-bottom: 28px;
+    }
+    .result-cta-text em {
+      font-style: normal;
+      font-weight: 500;
+      color: var(--accent-dark);
+    }
+
+    /* ─── BUTTONS ─────────────────────────────────── */
+    .btn-primary {
+      display: inline-block;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      padding: 18px 40px;
+      font-family: var(--sans-ja);
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-primary.full { width: 100%; text-align: center; display: block; }
+    .btn-accent {
+      display: inline-block;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 16px 32px;
+      font-family: var(--sans-ja);
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-accent:hover { background: var(--accent); color: var(--white); }
+    .btn-accent.full { width: 100%; text-align: center; display: block; }
+
+    /* ─── ERROR / STATUS ──────────────────────────── */
+    .error-msg {
+      font-size: 13px;
+      color: #c0392b;
+      margin-top: 8px;
+      display: none;
+    }
+    .sending-msg {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* ─── UTILITIES ───────────────────────────────── */
+    .spacer { flex: 1; }
+    @media (max-width: 480px) {
+      .result-cta-block { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── SCREEN 1: START ──────────────────────────── -->
+  <section id="screen-start" class="screen active">
+    <p class="start-eyebrow">Management Philosophy Assessment</p>
+    <h1 class="start-title">経営思想タイプ診断</h1>
+    <p class="start-title-en">What kind of thinker are you?</p>
+    <p class="start-desc">
+      あなたが経営判断を下すとき、その奥底にはどんな思想が流れているのか。<br>
+      18の問いを通じて、あなたの経営思想タイプを明らかにします。
+    </p>
+    <button class="btn-primary" onclick="showScreen('eligibility')">診断を始める</button>
+    <p class="start-meta">所要時間 約5分 / 18問</p>
+  </section>
+
+  <!-- ── SCREEN 2: ELIGIBILITY ────────────────────── -->
+  <section id="screen-eligibility" class="screen">
+    <p class="start-eyebrow" style="margin-bottom:16px">はじめに</p>
+    <h2 class="eligibility-title">あなたは、経営判断に<br>関わる立場ですか？</h2>
+    <div class="eligibility-buttons">
+      <button class="eligibility-btn" onclick="startQuestions()">
+        はい
+        <span class="btn-note">経営者・役員・事業責任者として判断に関わっている</span>
+      </button>
+      <button class="eligibility-btn" onclick="showScreen('start')">
+        いいえ、まだこれからです
+        <span class="btn-note">将来の準備として受けてみたい</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── PROGRESS BAR (questions only) ────────────── -->
+  <div class="progress-wrap" id="progress-wrap" style="display:none">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <span class="progress-label" id="progress-label">Q1 / 18</span>
+  </div>
+
+  <!-- ── SCREEN 3: QUESTIONS ──────────────────────── -->
+  <section id="screen-question" class="screen">
+    <div class="question-area">
+      <p class="question-cluster" id="q-cluster"></p>
+      <h2 class="question-text" id="q-text"></h2>
+      <div class="scale-wrap" id="scale-wrap"></div>
+      <div class="question-nav">
+        <button class="nav-back" id="btn-back" onclick="prevQuestion()">← 前へ</button>
+        <span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SCREEN 4: EMAIL ───────────────────────────── -->
+  <section id="screen-email" class="screen">
+    <p class="email-eyebrow">診断完了</p>
+    <h2 class="email-title">結果をお送りします。<br>メールアドレスを教えてください。</h2>
+    <p class="email-desc">入力いただいたアドレスに、診断結果の概要をお送りします。</p>
+    <input type="email" class="email-input" id="email-input" placeholder="your@email.com" autocomplete="email">
+    <p class="error-msg" id="email-error">有効なメールアドレスを入力してください。</p>
+    <p class="sending-msg" id="sending-msg">送信中...</p>
+    <button class="btn-primary full" onclick="submitResult()">結果を見る</button>
+    <p class="email-note">※ スパムメールは送りません。個人情報は適切に管理します。</p>
+  </section>
+
+  <!-- ── SCREEN 5: RESULT ──────────────────────────── -->
+  <section id="screen-result" class="screen">
+    <div class="result-header">
+      <p class="result-eyebrow" id="r-cluster-label"></p>
+      <p class="result-type-en" id="r-type-en"></p>
+      <h2 class="result-type-ja" id="r-type-ja"></h2>
+      <p class="result-tagline" id="r-tagline"></p>
+    </div>
+
+    <div class="cluster-chart" id="cluster-chart"></div>
+
+    <hr class="result-divider">
+
+    <div class="result-section">
+      <p class="result-section-label">特徴</p>
+      <p class="result-section-text" id="r-feature"></p>
+    </div>
+    <div class="result-section">
+      <p class="result-section-label">強み</p>
+      <p class="result-section-text" id="r-strength"></p>
+    </div>
+    <div class="result-section">
+      <p class="result-section-label">今の壁</p>
+      <p class="result-section-text" id="r-wall"></p>
+    </div>
+    <div class="result-section">
+      <p class="result-section-label">次の一手</p>
+      <p class="result-section-text" id="r-next"></p>
+    </div>
+
+    <div class="result-cta-block">
+      <p class="result-cta-text" id="r-cta-text"></p>
+      <a href="#" class="btn-accent full">経営構造カルテについて見る</a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────
+//  DATA
+// ─────────────────────────────────────────────────────────
+
+const SCALE_LABELS = [
+  { value: 1, label: 'まったく当てはまらない' },
+  { value: 2, label: 'あまり当てはまらない' },
+  { value: 3, label: 'どちらでもない' },
+  { value: 4, label: 'やや当てはまる' },
+  { value: 5, label: 'とても当てはまる' },
+];
+
+// cluster: 'V'|'S'|'D'|'C'|null (null = 浸透度サイン)
+const QUESTIONS = [
+  // Outer 8問
+  { id: 'Q1',  cluster: 'D', group: 'Outer', text: '重要な決断は、できるだけ早く下したい。' },
+  { id: 'Q2',  cluster: 'D', group: 'Outer', text: '自分の考えは、はっきり言葉にして周囲に伝える。' },
+  { id: 'Q3',  cluster: 'D', group: 'Outer', text: '新しい挑戦には、まず自分が先頭に立つ。' },
+  { id: 'Q4',  cluster: 'V', group: 'Outer', text: '会議では、結論より先に全体像や方向性を語る。' },
+  { id: 'Q5',  cluster: 'D', group: 'Outer', text: '細部の精度より、まず動かすことを優先する。' },
+  { id: 'Q6',  cluster: 'C', group: 'Outer', text: '人の感情や場の空気に、自然と配慮が向く。' },
+  { id: 'Q7',  cluster: 'S', group: 'Outer', text: '計画や仕組みを整えてから動きたい。' },
+  { id: 'Q8',  cluster: 'C', group: 'Outer', text: '周囲を巻き込み、合意を作ることを大切にする。' },
+  // Inner 8問
+  { id: 'Q9',  cluster: 'V', group: 'Inner', text: '判断に迷ったとき、最後は自分の信念に従う。' },
+  { id: 'Q10', cluster: 'S', group: 'Inner', text: '「正しいか」より「美しいか・らしいか」を重視する。' },
+  { id: 'Q11', cluster: 'V', group: 'Inner', text: '数字や事実より、本質や意味を優先したい。' },
+  { id: 'Q12', cluster: 'V', group: 'Inner', text: '過去の成功パターンより、未来の理想から逆算する。' },
+  { id: 'Q13', cluster: 'S', group: 'Inner', text: '短期の利益より、長期で残る価値を選ぶ。' },
+  { id: 'Q14', cluster: 'C', group: 'Inner', text: '人との関係性が、判断に強く影響する。' },
+  { id: 'Q15', cluster: 'V', group: 'Inner', text: '「なぜそれをやるのか」が曖昧だと、前に進めない。' },
+  { id: 'Q16', cluster: 'C', group: 'Inner', text: '効率や合理性だけで決めると、違和感が残る。' },
+  // 浸透度サイン
+  { id: 'Q17', cluster: null, group: '浸透度', text: '自分の経営哲学を、社員は自分の言葉で語れると思う。' },
+  { id: 'Q18', cluster: null, group: '浸透度', text: '自分がいなくても、組織は「自分らしい」判断を続けられる。' },
+];
+
+const CLUSTER_QUESTIONS = {
+  V: ['Q4', 'Q9', 'Q11', 'Q12', 'Q15'],   // 5問
+  S: ['Q7', 'Q10', 'Q13'],                  // 3問
+  D: ['Q1', 'Q2', 'Q3', 'Q5'],             // 4問
+  C: ['Q6', 'Q8', 'Q14', 'Q16'],           // 4問
+};
+
+const TYPES = {
+  '構想家': {
+    en: 'The Visionary',
+    cluster: 'V',
+    tagline: '未来を描き、人を惹きつける思想家。',
+    feature: 'あなたは「まだ無い未来」を語ることで人を動かす人。あるべき姿から逆算して道を描きます。',
+    strength: 'あなたの描く未来像は、組織が迷ったときに見上げる「旗」になります。',
+    wall: '理想が大きいほど、現場との距離が生まれやすい。',
+    next: 'その未来を、組織が日々使える判断基準に翻訳する。',
+  },
+  '探究者': {
+    en: 'The Philosopher',
+    cluster: 'V',
+    tagline: '本質を問い続ける思想家。',
+    feature: 'あなたは「なぜ」を手放せない人。本質に届くまで考え抜きます。',
+    strength: 'あなたの問いの深さは、他社が真似できない独自性の源泉です。',
+    wall: '思索が深いほど、言葉にするのに時間がかかる。',
+    next: '深い思想を、他者に伝わる構造に変換し「資産」にする。',
+  },
+  'オラクル': {
+    en: 'The Oracle',
+    cluster: 'V',
+    tagline: '直感で本質を見抜く思想家。',
+    feature: 'あなたは理屈より先に「正解の匂い」を感じ取る人。',
+    strength: 'あなたの直感は、経験が凝縮された高速の判断エンジンです。',
+    wall: '直感が当たるほど、根拠を聞かれると困る。',
+    next: 'その直感を言語化し、組織が再現できる判断軸にする。',
+  },
+  '設計士': {
+    en: 'The Architect',
+    cluster: 'S',
+    tagline: '仕組みで価値を設計する思想家。',
+    feature: 'あなたは「仕組みで解く」人。再現性のある構造を作ることに価値を感じます。',
+    strength: 'あなたの設計力は、組織を属人性から解放する力です。',
+    wall: '構造を作り込むほど、自分以外が運用できなくなる。',
+    next: '頭の中の設計思想を、組織の共通言語にする。',
+  },
+  '戦略家': {
+    en: 'The Strategist',
+    cluster: 'S',
+    tagline: '長期の構図を描く思想家。',
+    feature: 'あなたは「全体の地図」を見て動く人。数手先から逆算します。',
+    strength: 'あなたの俯瞰力は、組織がブレずに進む羅針盤です。',
+    wall: '構図が見えているのは自分だけ、になりやすい。',
+    next: '戦略観の土台にある思想を言語化し、組織に共有する。',
+  },
+  '匠': {
+    en: 'The Craftsman',
+    cluster: 'S',
+    tagline: '細部の質に妥協しない思想家。',
+    feature: 'あなたは「ここは譲れない」を持つ人。芯のないものを見抜きます。',
+    strength: 'あなたの審美眼は、ブランドの品位を守る最後の砦です。',
+    wall: '基準が高いほど、それが言葉で伝わらず衝突が起きる。',
+    next: '「譲れない基準」を言語化し、組織全体の品質基準にする。',
+  },
+  'パイオニア': {
+    en: 'The Pioneer',
+    cluster: 'D',
+    tagline: '先頭で道を拓く思想家。',
+    feature: 'あなたは「まず自分が動く」人。最初の一歩を刻みます。',
+    strength: 'あなたの突破力は、組織が停滞を抜けるエンジンです。',
+    wall: '先頭を走るほど、後続との距離が開く。',
+    next: '推進力を、組織が共有できる「進む理由」に変える。',
+  },
+  'イグナイター': {
+    en: 'The Igniter',
+    cluster: 'D',
+    tagline: '情熱で組織に火を灯す思想家。',
+    feature: 'あなたは「人の心を動かす」人。熱で周囲を巻き込みます。',
+    strength: 'あなたの情熱は、数字に表れない組織の推進力です。',
+    wall: '自分がいる時はいいが、いないと火が消えやすい。',
+    next: '情熱の源にある思想を言語化し、受け継がれる火にする。',
+  },
+  'アルケミスト': {
+    en: 'The Alchemist',
+    cluster: 'D',
+    tagline: '混沌から価値を生む思想家。',
+    feature: 'あなたは「整っていない状態」に強い人。混乱から価値の原石を見つけます。',
+    strength: 'あなたの変換力は、危機を機会に変える稀有な才能です。',
+    wall: '価値に変えられるのが自分だけ、になりやすい。',
+    next: '「混沌を読む視点」を構造化し、組織が使える方法論にする。',
+  },
+  'ハーモナイザー': {
+    en: 'The Harmonizer',
+    cluster: 'C',
+    tagline: '関係の中で価値を育てる思想家。',
+    feature: 'あなたは「場の調和」を見る人。関係性の中で価値が育つと知っています。',
+    strength: 'あなたの調整力は、組織の信頼関係という見えない資産を作ります。',
+    wall: '調和を重んじるほど、決断が遅れることがある。',
+    next: '大切にする「関係の哲学」を言語化し、組織文化の土台にする。',
+  },
+  '守護者': {
+    en: 'The Guardian',
+    cluster: 'C',
+    tagline: '大切なものを守り抜く思想家。',
+    feature: 'あなたは「守るべきもの」を持つ人。核を守ることに価値を感じます。',
+    strength: 'あなたの守る力は、ブランドの一貫性と信頼を支える基盤です。',
+    wall: '守る気持ちが強いほど、変化に慎重になる。',
+    next: '「守るべき核」と「変えていい部分」を言語化し、承継できる形にする。',
+  },
+  'コネクター': {
+    en: 'The Connector',
+    cluster: 'C',
+    tagline: '人を繋ぎ価値を循環させる思想家。',
+    feature: 'あなたは「繋ぐことで価値が生まれる」と知る人。',
+    strength: 'あなたの繋ぐ力は、組織を外に開き、機会を呼び込む力です。',
+    wall: '繋ぐ力が属人的になりやすい。',
+    next: '「繋ぐ哲学」を言語化し、組織の関係資本として設計する。',
+  },
+};
+
+// ─────────────────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────────────────
+let currentQ = 0;
+const answers = {}; // { Q1: 1..5, ... }
+let resultData = null;
+
+// ─────────────────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) el.classList.add('active');
+
+  const progressWrap = document.getElementById('progress-wrap');
+  progressWrap.style.display = (name === 'question') ? 'flex' : 'none';
+}
+
+function startQuestions() {
+  currentQ = 0;
+  renderQuestion();
+  showScreen('question');
+}
+
+// ─────────────────────────────────────────────────────────
+//  QUESTION RENDER
+// ─────────────────────────────────────────────────────────
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const total = QUESTIONS.length;
+
+  // Progress
+  const pct = (currentQ / total) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `Q${currentQ + 1} / ${total}`;
+
+  // Cluster label
+  const clusterNames = { V: 'Vision', S: 'Structure', D: 'Drive', C: 'Care', null: '浸透度' };
+  document.getElementById('q-cluster').textContent =
+    q.group === '浸透度' ? '浸透度サイン' : `${q.group} — ${clusterNames[q.cluster]}`;
+
+  // Question text
+  document.getElementById('q-text').textContent = q.text;
+
+  // Scale options
+  const wrap = document.getElementById('scale-wrap');
+  wrap.innerHTML = '';
+  const current = answers[q.id];
+  SCALE_LABELS.forEach(({ value, label }) => {
+    const div = document.createElement('div');
+    div.className = 'scale-option' + (current === value ? ' selected' : '');
+    div.innerHTML = `
+      <div class="scale-radio"><div class="scale-radio-inner"></div></div>
+      <span class="scale-num">${value}</span>
+      <span class="scale-label">${label}</span>
+    `;
+    div.addEventListener('click', () => selectAnswer(q.id, value));
+    wrap.appendChild(div);
+  });
+
+  // Back button
+  document.getElementById('btn-back').disabled = (currentQ === 0);
+
+  // Scroll to top of question
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectAnswer(qId, value) {
+  answers[qId] = value;
+
+  // Update UI
+  document.querySelectorAll('.scale-option').forEach((opt, i) => {
+    opt.classList.toggle('selected', SCALE_LABELS[i].value === value);
+  });
+
+  // Auto-advance after short delay
+  setTimeout(() => {
+    if (currentQ < QUESTIONS.length - 1) {
+      currentQ++;
+      renderQuestion();
+    } else {
+      // All answered
+      computeResult();
+      showScreen('email');
+    }
+  }, 350);
+}
+
+function prevQuestion() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+//  SCORING
+// ─────────────────────────────────────────────────────────
+function toScore(val) {
+  // 1→-2, 2→-1, 3→0, 4→+1, 5→+2
+  return (val || 3) - 3;
+}
+
+function computeResult() {
+  // 1. Raw cluster scores
+  const raw = { V: 0, S: 0, D: 0, C: 0 };
+  for (const [cluster, qIds] of Object.entries(CLUSTER_QUESTIONS)) {
+    for (const qId of qIds) {
+      raw[cluster] += toScore(answers[qId] || 3);
+    }
+  }
+
+  // 2. Normalize to 0–100 per cluster
+  const counts = { V: 5, S: 3, D: 4, C: 4 };
+  const norm = {};
+  for (const c of ['V', 'S', 'D', 'C']) {
+    const min = counts[c] * -2;
+    const max = counts[c] * 2;
+    norm[c] = ((raw[c] - min) / (max - min)) * 100;
+  }
+
+  // 3. Redistribute to sum to 100
+  const total = Object.values(norm).reduce((a, b) => a + b, 0);
+  const pct = {};
+  for (const c of ['V', 'S', 'D', 'C']) {
+    pct[c] = total > 0 ? Math.round((norm[c] / total) * 100) : 25;
+  }
+  // Fix rounding
+  const diff = 100 - Object.values(pct).reduce((a, b) => a + b, 0);
+  const dominant = Object.keys(pct).reduce((a, b) => pct[a] > pct[b] ? a : b);
+  pct[dominant] += diff;
+
+  // 4. Determine dominant cluster
+  const dom = Object.keys(pct).reduce((a, b) => pct[a] > pct[b] ? a : b);
+
+  // 5. Type selection within cluster
+  const typeName = selectType(dom);
+
+  // 6. Penetration sign
+  const penScore = toScore(answers['Q17'] || 3) + toScore(answers['Q18'] || 3);
+  const highPen = penScore >= 2;
+
+  resultData = { typeName, pct, dom, highPen };
+}
+
+function selectType(dom) {
+  const s = (qId) => toScore(answers[qId] || 3);
+
+  if (dom === 'V') {
+    // Q9突出チェック: Q9が他のVより +1 以上高い
+    const vAvg = (s('Q4') + s('Q11') + s('Q12') + s('Q15')) / 4;
+    if (s('Q9') >= vAvg + 1) return 'オラクル';
+    // Outer推進寄り
+    const outerDriveScore = s('Q1') + s('Q2') + s('Q3');
+    if (outerDriveScore >= 2) return '構想家';
+    return '探究者';
+  }
+
+  if (dom === 'S') {
+    const q10 = s('Q10'), q13 = s('Q13'), q7 = s('Q7');
+    if (q10 >= q13 && q10 >= q7 && q10 >= 1) return '匠';
+    if (q13 >= q7) return '戦略家';
+    return '設計士';
+  }
+
+  if (dom === 'D') {
+    const q3 = s('Q3'), q14 = s('Q14'), q11 = s('Q11');
+    if (q3 >= q14 && q3 >= q11) return 'パイオニア';
+    if (q14 >= q11) return 'イグナイター';
+    return 'アルケミスト';
+  }
+
+  if (dom === 'C') {
+    const q6 = s('Q6'), q13 = s('Q13'), q8 = s('Q8');
+    if (q6 >= q13 && q6 >= q8) return 'ハーモナイザー';
+    if (q13 >= q8) return '守護者';
+    return 'コネクター';
+  }
+
+  return '構想家';
+}
+
+// ─────────────────────────────────────────────────────────
+//  SUBMIT / NOTION
+// ─────────────────────────────────────────────────────────
+async function submitResult() {
+  const emailEl = document.getElementById('email-input');
+  const errorEl = document.getElementById('email-error');
+  const sendingEl = document.getElementById('sending-msg');
+  const email = emailEl.value.trim();
+
+  errorEl.style.display = 'none';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  sendingEl.style.display = 'block';
+
+  // Notion保存（サーバーエンドポイントが未設定でも結果表示は続行）
+  try {
+    const payload = {
+      email,
+      typeName: resultData.typeName,
+      clusterV: resultData.pct.V,
+      clusterS: resultData.pct.S,
+      clusterD: resultData.pct.D,
+      clusterC: resultData.pct.C,
+      penetration: resultData.highPen ? '高' : '低',
+    };
+    await fetch('/api/save-result', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    // Notion連携未設定の場合は無視して結果表示へ
+    console.warn('Notion save skipped:', e);
+  }
+
+  sendingEl.style.display = 'none';
+  renderResult();
+  showScreen('result');
+}
+
+// ─────────────────────────────────────────────────────────
+//  RESULT RENDER
+// ─────────────────────────────────────────────────────────
+function renderResult() {
+  const { typeName, pct, dom, highPen } = resultData;
+  const type = TYPES[typeName];
+
+  const clusterLabels = { V: 'Vision', S: 'Structure', D: 'Drive', C: 'Care' };
+  document.getElementById('r-cluster-label').textContent = clusterLabels[dom] + ' 型';
+  document.getElementById('r-type-en').textContent = type.en;
+  document.getElementById('r-type-ja').textContent = typeName;
+  document.getElementById('r-tagline').textContent = type.tagline;
+  document.getElementById('r-feature').textContent = type.feature;
+  document.getElementById('r-strength').textContent = type.strength;
+  document.getElementById('r-wall').textContent = type.wall;
+  document.getElementById('r-next').textContent = type.next;
+
+  // Cluster chart
+  const chartEl = document.getElementById('cluster-chart');
+  chartEl.innerHTML = '';
+  for (const c of ['V', 'S', 'D', 'C']) {
+    const wrap = document.createElement('div');
+    wrap.className = 'cluster-bar-wrap';
+    const barOuter = document.createElement('div');
+    barOuter.className = 'cluster-bar-outer';
+    const barInner = document.createElement('div');
+    barInner.className = 'cluster-bar-inner' + (c === dom ? ' dominant' : '');
+    barInner.style.height = '0%';
+    barOuter.appendChild(barInner);
+    wrap.innerHTML = `<div class="cluster-label">${clusterLabels[c]}</div>`;
+    wrap.insertBefore(barOuter, wrap.firstChild);
+    const pctEl = document.createElement('div');
+    pctEl.className = 'cluster-pct';
+    pctEl.textContent = pct[c] + '%';
+    wrap.appendChild(pctEl);
+    chartEl.appendChild(wrap);
+    // Animate after DOM paint
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        barInner.style.height = pct[c] + '%';
+      });
+    });
+  }
+
+  // CTA text
+  const ctaEl = document.getElementById('r-cta-text');
+  if (highPen) {
+    ctaEl.innerHTML = `あなたの思想は、すでに組織の言語になりつつあります。<br>さらにそれを構造として固定するのが、<em>経営構造カルテ</em>です。`;
+  } else {
+    ctaEl.innerHTML = `あなたの中には、明確な思想があります。<br>ただ、それがまだ「組織が使える言葉」になりきっていないかもしれません。<br>優れた経営哲学ほど、本人には当たり前すぎて言語化されにくいものです。<br><br>その輪郭を、90分の対話とレポートで構造化するのが<br><em>経営構造カルテ™</em>です。`;
+  }
+}
+</script>
+</body>
+</html>
